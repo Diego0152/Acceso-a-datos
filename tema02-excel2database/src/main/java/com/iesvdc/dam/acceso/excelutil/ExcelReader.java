@@ -34,14 +34,16 @@ public class ExcelReader {
     public static void loadToDataBase(Connection conexion, XSSFWorkbook wb) {
         final double EPSILON = 1e-10;
         PreparedStatement pStat = null;
-        StringBuilder sentCreateSql = new StringBuilder();
+        StringBuilder sentSQLCRTB = new StringBuilder();
+        StringBuilder sentSQLINVL = new StringBuilder();
         int numHojas = wb.getNumberOfSheets();
 
         try {
             for (int i = 0; i < numHojas; i++) {
                 Sheet hoja = wb.getSheetAt(i);
 
-                sentCreateSql.append("CREATE TABLE " + hoja.getSheetName() + " (\n");
+                sentSQLCRTB.append("CREATE TABLE " + hoja.getSheetName() + " (\n");
+                sentSQLINVL.append("INSERT INTO " + hoja.getSheetName() + " (");
 
                 int numTablas = hoja.getLastRowNum();
 
@@ -54,73 +56,102 @@ public class ExcelReader {
                     Cell encabCell = encabezado.getCell(j);
                     Cell identCell = identificarTipo.getCell(j);
 
-                    sentCreateSql.append(encabCell.getStringCellValue() + " ");
+                    sentSQLCRTB.append(encabCell.getStringCellValue() + " ");
+                    sentSQLINVL.append(encabCell.getStringCellValue());
 
                     switch (identCell.getCellType()) {
                         case STRING -> {
                             if (encabCell.getStringCellValue().equals("teléfono")) {
-                                sentCreateSql.append("VARCHAR(12)");  
+                                sentSQLCRTB.append("VARCHAR(12)");  
                             } else if (encabCell.getStringCellValue().equals("género")) {
-                                sentCreateSql.append("enum('FEMENINO','MASCULINO','NEUTRO','OTRO') NOT NULL");
+                                sentSQLCRTB.append("enum('FEMENINO','MASCULINO','NEUTRO','OTRO') NOT NULL");
                             } else {
-                                sentCreateSql.append("VARCHAR(300)");
+                                sentSQLCRTB.append("VARCHAR(300)");
 
                                 if (encabCell.getStringCellValue().equals("nombre")) {
-                                    sentCreateSql.append(" NOT NULL");
+                                    sentSQLCRTB.append(" NOT NULL");
                                 } else if (encabCell.getStringCellValue().equals("apellidos")) {
-                                    sentCreateSql.append(" NOT NULL");
+                                    sentSQLCRTB.append(" NOT NULL");
                                 }
-                            }
 
+                            }
                         }
 
                         case NUMERIC -> {
                             if (DateUtil.isCellDateFormatted(encabCell)) {
-                                sentCreateSql.append("DATE");
+                                sentSQLCRTB.append("DATE");
                             } else {
                                 double valor = encabCell.getNumericCellValue();
                                 if (Math.abs(valor - Math.floor(valor)) < EPSILON) {
-                                    sentCreateSql.append("INT(10)");
+                                    sentSQLCRTB.append("INT(10)");
                                 } else {
-                                    sentCreateSql.append("DOUBLE(10, 2)");
+                                    sentSQLCRTB.append("DOUBLE(10, 2)");
                                 }
+                                
                             }
                         }
 
                         case BOOLEAN -> {
-                            sentCreateSql.append("BOOLEAN ");
+                            sentSQLCRTB.append("BOOLEAN ");
                         }
 
                         default -> {
-                            sentCreateSql.append("");
+                            sentSQLCRTB.append("");
                         }               
                         
                     }
 
                     if (j < numColumnas - 1) {
-                        sentCreateSql.append(",\n");
+                        sentSQLCRTB.append(",\n");
                     } else {
-                        sentCreateSql.append("\n");
+                        sentSQLCRTB.append("\n");
+                    }
+
+                    if (j < numColumnas - 1) {
+                        sentSQLINVL.append(", ");
+                    } else {
+                        sentSQLINVL.append(")\n");
+                    }
+
+                }
+
+                sentSQLINVL.append("VALUES (");
+
+                for (int k = 1; k < numTablas; k++) {
+                    Row fila = hoja.getRow(k);
+                    int numCeldas = fila.getLastCellNum();
+                    
+                    for (int l = 0; l < numCeldas; l++) {
+                        sentSQLINVL.append(fila.getCell(l));
+
+                        if (l < numColumnas - 1) {
+                            sentSQLINVL.append(", ");
+                        } else {
+                            sentSQLINVL.append("");
+                        }
+                        
+                    } 
+                 
+                    
+                    sentSQLINVL.append(")");
+                    if (k < numTablas - 1) {
+                        sentSQLINVL.append(",\n(");
+                    } else {
+                        sentSQLINVL.append(";\n");
                     }
                 }
 
-                sentCreateSql.append(") ENGINE=InnoDB;");
-                pStat = conexion.prepareStatement(sentCreateSql.toString());
+                sentSQLCRTB.append(") ENGINE=InnoDB;");
+                pStat = conexion.prepareStatement(sentSQLCRTB.toString());
                 if (pStat.executeUpdate() == 0) {
-                    System.out.println(sentCreateSql.toString());
                     System.out.println("Tabla " + hoja.getSheetName() + " creada.");
+                    System.out.println(sentSQLCRTB.toString());
+                    System.out.println(sentSQLINVL.toString());
                 } else {
                     System.err.println("Error al crear la tabla.");
                 }
+                System.out.println(sentSQLINVL.toString());
 
-                for (int j = 1; j < numTablas; j++) {
-                    Row columna = hoja.getRow(j);
-
-                    int numCelda = columna.getLastCellNum();
-
-                    // System.out.println();
-                    
-                }
             }
             
         } catch (SQLException e) {
