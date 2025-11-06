@@ -1,7 +1,6 @@
 package com.iesvdc.dam.acceso.excelutil;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
@@ -159,7 +158,6 @@ public class ExcelReader {
                     System.out.println(sentSQLCRTB.toString());
                     System.out.println();
                     
-                    
                 } else {
                     System.err.println("Error al crear la tabla.");
                 }
@@ -168,7 +166,6 @@ public class ExcelReader {
                 
                 if (verifIN > 0) {
                     System.out.println("Datos insertados de: " + hoja.getSheetName() + "\n");
-                    System.out.println(sentSQLINVL.toString());
                     System.out.println();
                     
                 } else {

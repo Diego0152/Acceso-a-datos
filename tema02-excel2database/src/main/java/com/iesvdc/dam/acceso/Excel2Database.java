@@ -1,6 +1,7 @@
 package com.iesvdc.dam.acceso;
 
 import java.sql.Connection;
+import java.util.Scanner;
 
 import com.iesvdc.dam.acceso.conexion.Conexion;
 import com.iesvdc.dam.acceso.excelutil.ExcelReader;
@@ -22,17 +23,38 @@ import com.iesvdc.dam.acceso.excelutil.ExcelReader;
  *
  */
 public class Excel2Database {
-    public static void main( String[] args ) {                
+    public static void main( String[] args ) {
+        Scanner sc = new Scanner(System.in);                
+        String menu = """
+                Selecciona la opción que desea realizar:
+                1) Agregar la base de datos desde excel.
+                2) Guardar la base de datos en un excel.
+                """;
 
         try (Connection conexion = Conexion.getConnection()) {
             if (conexion!=null) { 
                 System.out.println("Conectado correctamente.");
+                
+                System.out.println(menu);
+                int opciones = sc.nextInt();
+                
+                switch (opciones) {
+                    case 1 -> {
+                        ExcelReader.loadToDataBase(conexion, ExcelReader.loadExcel(conexion));
+                    }
+                    case 2 -> {
+                        System.out.println("Procesando...");
+                    }
+                    default -> {
+                        System.out.println("Saliendo del programa...");
+                        return;
+                    }
+                        
+                }
             } else {
                 System.out.println("Imposible conectar");
             }
-
-            ExcelReader.loadToDataBase(conexion, ExcelReader.loadExcel(conexion));
-
+        
         } catch (Exception e) {
             System.err.println("No se pudo conectar.");            
         }
