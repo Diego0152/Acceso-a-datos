@@ -159,11 +159,12 @@ Crea un archivo Excel (outputFile) con los datos exportados.
 
 Definidas en el archivo pom.xml:
 
- | Librería          |	Descripción          |
- |-------------------------------------------|
- | mysql-connector-j | Conexión JDBC a MySQL |
- | poi y poi-ooxml |	Lectura/escritura de archivos Excel (Apache POI) | 
- | junit	| Pruebas unitarias (opcional) |
+| Librería          | Descripción                             |
+| ----------------- | --------------------------------------- |
+| mysql-connector-j | Conexión JDBC a MySQL                   |
+| poi / poi-ooxml   | Lectura/escritura de Excel (Apache POI) |
+| junit             | Pruebas unitarias (opcional)            |
+
 ## Ejecución del programa
 
 Inicia los contenedores:
