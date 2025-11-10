@@ -54,7 +54,7 @@ services:
 
 db-excel → crea una base de datos MySQL.
 
-Se inicia con el script db/init.sql (si existe).
+Se inicia con el script `db/init.sql` (si existe).
 
 Contraseña de root: s83n38DGB8d72
 
@@ -67,8 +67,9 @@ Accesible en: http://localhost:8181
 ## Ejecución
 
 Desde la raíz del proyecto, ejecuta:
-
+```bash
 docker-compose up
+```
 
 
 Esto levantará la base de datos y Adminer.
@@ -82,7 +83,7 @@ Una vez esté en marcha, podrás entrar a Adminer y conectarte con estos datos:
 | Contraseña     | s83n38DGB8d72           |
 | Base de datos  | agenda                  |
 
-🧾 Archivo config.properties
+## Archivo config.properties
 
 El archivo config.properties contiene la configuración que Java usa para conectarse a la base de datos y localizar los archivos Excel:
 ```properties
@@ -101,17 +102,18 @@ serverTimezone=Europe/Madrid
 allowPublicKeyRetrieval=true
 ```
 
-📊 Funcionamiento general
+## Funcionamiento general
 
 El programa principal es Excel2Database.java, que presenta un menú con dos opciones:
-
+```csharp
 Selecciona la opción que desea realizar:
 1) Agregar la base de datos desde excel.
 2) Guardar la base de datos en un excel.
+```
 
-🔹 Opción 1: Cargar Excel en la base de datos
+### Opción 1: Cargar Excel en la base de datos
 
-El método ExcelReader.loadToDataBase():
+El método `ExcelReader.loadToDataBase():`
 
 Lee el archivo Excel indicado en config.properties (inputFile).
 
@@ -125,14 +127,14 @@ Usa la segunda fila para inferir el tipo de dato.
 
 Inserta todas las filas restantes como registros.
 
-Ejemplo de Excel:
-nombre	apellidos	teléfono	género
-texto	texto	texto	texto
-Ana	López	654321987	FEMENINO
-Juan	Pérez	678912345	MASCULINO
+| nombre | apellidos | teléfono   | género    |
+|--------|-----------|------------|-----------|
+| texto  | texto     | texto      | texto     |
+| Ana    | López     | 654321987  | FEMENINO  |
+| Juan   | Pérez     | 678912345  | MASCULINO|
 
 Esto generará automáticamente:
-
+```sql
 CREATE TABLE Hoja1 (
   nombre VARCHAR(300) NOT NULL,
   apellidos VARCHAR(300) NOT NULL,
@@ -143,8 +145,9 @@ CREATE TABLE Hoja1 (
 INSERT INTO Hoja1 (nombre, apellidos, teléfono, género)
 VALUES ('Ana','López','654321987','FEMENINO'),
        ('Juan','Pérez','678912345','MASCULINO');
+```
 
-🔹 Opción 2: Exportar la base de datos a Excel
+### Opción 2: Exportar la base de datos a Excel
 
 El método ExcelWriter.loadDatabaseDatos() (si está implementado) realiza la operación inversa:
 
@@ -152,7 +155,7 @@ Lee las tablas de la base de datos.
 
 Crea un archivo Excel (outputFile) con los datos exportados.
 
-🧰 Dependencias principales
+## Dependencias principales
 
 Definidas en el archivo pom.xml:
 
@@ -160,11 +163,11 @@ Librería	Descripción
 mysql-connector-j	Conexión JDBC a MySQL
 poi y poi-ooxml	Lectura/escritura de archivos Excel (Apache POI)
 junit	Pruebas unitarias (opcional)
-🚀 Ejecución del programa
+## Ejecución del programa
 
 Inicia los contenedores:
 
-docker-compose up
+`docker-compose up`
 
 
 Abre el proyecto en tu IDE (Eclipse, IntelliJ o VS Code).
@@ -177,7 +180,7 @@ Selecciona la opción del menú:
 
 2 → Exportar datos de MySQL a Excel.
 
-🧠 Conceptos clave del proyecto
+## Conceptos clave del proyecto
 
 Apache POI: Librería para manipular ficheros .xlsx.
 
@@ -188,21 +191,3 @@ Docker Compose: Permite crear entornos reproducibles para bases de datos.
 Config.properties: Centraliza toda la configuración del proyecto.
 
 Automatización SQL: El programa genera las sentencias CREATE TABLE e INSERT INTO dinámicamente según el contenido del Excel.
-
-🧾 Autor
-
-Proyecto educativo desarrollado en Java 21 (Maven)
-IES VDC · DAM — Acceso a Datos
-📚 Práctica: Volcar datos desde Excel a MySQL con Apache POI y JDBC.
-
-🧩 Posibles mejoras
-
-Validación de tipos más robusta (fecha, decimal, booleano).
-
-Manejo de claves primarias y relaciones entre tablas.
-
-Exportación de base de datos completa a Excel (complemento de ExcelWriter).
-
-Uso de transacciones para operaciones seguras.
-
-💡 Con este proyecto puedes automatizar el proceso de creación de tablas y carga de datos desde hojas Excel sin escribir manualmente el SQL.
