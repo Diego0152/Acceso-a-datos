@@ -131,7 +131,7 @@ Inserta todas las filas restantes como registros.
 |--------|-----------|------------|-----------|
 | texto  | texto     | texto      | texto     |
 | Ana    | López     | 654321987  | FEMENINO  |
-| Juan   | Pérez     | 678912345  | MASCULINO|
+| Juan   | Pérez     | 678912345  | MASCULINO | 
 
 Esto generará automáticamente:
 ```sql
@@ -159,10 +159,11 @@ Crea un archivo Excel (outputFile) con los datos exportados.
 
 Definidas en el archivo pom.xml:
 
-Librería	Descripción
-mysql-connector-j	Conexión JDBC a MySQL
-poi y poi-ooxml	Lectura/escritura de archivos Excel (Apache POI)
-junit	Pruebas unitarias (opcional)
+ | Librería          |	Descripción          |
+ |-------------------------------------------|
+ | mysql-connector-j | Conexión JDBC a MySQL |
+ | poi y poi-ooxml |	Lectura/escritura de archivos Excel (Apache POI) | 
+ | junit	| Pruebas unitarias (opcional) |
 ## Ejecución del programa
 
 Inicia los contenedores:
