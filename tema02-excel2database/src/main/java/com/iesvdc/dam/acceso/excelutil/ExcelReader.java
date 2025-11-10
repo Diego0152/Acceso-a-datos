@@ -17,8 +17,10 @@ import org.apache.poi.ss.usermodel.Row;
 public class ExcelReader {
     
     public static XSSFWorkbook loadExcel(Connection conexion) {
+        // Sincronizamos la configuración de la base de datos.
         Properties prop = Config.getProperties("config.properties");
 
+        // Recogemos el archivo de 
         String inFile = prop.getProperty("inputFile");
         XSSFWorkbook wb = null;
 

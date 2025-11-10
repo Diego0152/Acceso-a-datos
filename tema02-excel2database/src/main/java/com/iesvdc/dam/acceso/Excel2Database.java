@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import com.iesvdc.dam.acceso.conexion.Conexion;
 import com.iesvdc.dam.acceso.excelutil.ExcelReader;
+import com.iesvdc.dam.acceso.excelutil.ExcelWriter;
 
 /**
  * Este programa genérico en java (proyecto Maven) es un ejercicio 
@@ -43,7 +44,7 @@ public class Excel2Database {
                         ExcelReader.loadToDataBase(conexion, ExcelReader.loadExcel(conexion));
                     }
                     case 2 -> {
-                        System.out.println("Procesando...");
+                        ExcelWriter.loadDatabaseDatos(conexion);
                     }
                     default -> {
                         System.out.println("Saliendo del programa...");
@@ -54,6 +55,7 @@ public class Excel2Database {
             } else {
                 System.out.println("Imposible conectar");
             }
+            sc.close();
         
         } catch (Exception e) {
             System.err.println("No se pudo conectar.");            
