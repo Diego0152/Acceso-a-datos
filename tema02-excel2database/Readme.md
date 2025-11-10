@@ -147,7 +147,7 @@ VALUES ('Ana','López','654321987','FEMENINO'),
        ('Juan','Pérez','678912345','MASCULINO');
 ```
 
-### Opción 2: Exportar la base de datos a Excel
+### Opción 2: Exportar la base de datos a Excel (No terminado)
 
 El método ExcelWriter.loadDatabaseDatos() (si está implementado) realiza la operación inversa:
 
